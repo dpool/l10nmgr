@@ -1,5 +1,5 @@
 {
-	"name": "localizationteam/l10nmgr",
+	"name": "dpool/l10nmgr",
 	"type": "typo3-cms-extension",
 	"version" : "8.2.1",
 	"description": "Module for managing localization import and export",
