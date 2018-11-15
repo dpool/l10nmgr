@@ -101,6 +101,18 @@ class L10nConfiguration
      **/
     public function getL10nAccumulatedInformationsObjectForLanguage($sysLang)
     {
+
+        /*
+         * Depth:
+         *  0: This page only
+         *  1: 1 deep
+         *  2: 2 deep
+         *  3: 3 deep
+         *  100: infinite
+         *  -1: Current page
+         *  -2: List of pages
+         */
+
         $l10ncfg = $this->l10ncfg;
         $depth = (int)$l10ncfg['depth'];
         $treeStartingRecords = array();
@@ -108,13 +120,12 @@ class L10nConfiguration
         // Initialize starting point of page tree:
         if ($depth === -1) {
             $treeStartingPoints = array((int)GeneralUtility::_GET('srcPID'));
+        } elseif (!empty($l10ncfg['pages'])) {
+            $treeStartingPoints = GeneralUtility::intExplode(',', $l10ncfg['pages']);
         } else {
-            if ($depth === -2 && !empty($l10ncfg['pages'])) {
-                $treeStartingPoints = GeneralUtility::intExplode(',', $l10ncfg['pages']);
-            } else {
-                $treeStartingPoints = array((int)$l10ncfg['pid']);
-            }
+            $treeStartingPoints = array((int)$l10ncfg['pid']);
         }
+
         /** @var $tree PageTreeView */
         if (!empty($treeStartingPoints)) {
             foreach ($treeStartingPoints as $treeStartingPoint) {
@@ -126,27 +137,21 @@ class L10nConfiguration
             $tree->addField('l18n_cfg');
             /** @var IconFactory $iconFactory */
             $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
-            $page = array_shift($treeStartingRecords);
-            $HTML = $iconFactory->getIconForRecord('pages', $page, Icon::SIZE_SMALL)->render();
-            $tree->tree[] = array(
-                'row' => $page,
-                'HTML' => $HTML
-            );
-            // Create the tree from starting point or page list:
-            if ($depth > 0) {
+
+
+            foreach ($treeStartingRecords as $page) {
+                $HTML = $iconFactory->getIconForRecord('pages', $page, Icon::SIZE_SMALL)->render();
+                $tree->tree[] = array(
+                    'row' => $page,
+                    'HTML' => $HTML
+                );
                 $tree->getTree($page['uid'], $depth, '');
-            } else {
-                if (!empty($treeStartingRecords)) {
-                    foreach ($treeStartingRecords as $page) {
-                        $HTML = $iconFactory->getIconForRecord('pages', $page, Icon::SIZE_SMALL)->render();
-                        $tree->tree[] = array(
-                            'row' => $page,
-                            'HTML' => $HTML
-                        );
-                    }
-                }
             }
         }
+
+
+        GeneralUtility::sysLog(sprintf('count tree: ' . count($tree->tree), []), 'Dpool_Saml', GeneralUtility::SYSLOG_SEVERITY_WARNING);
+
         //now create and init accum Info object:
         /** @var L10nAccumulatedInformation $accumObj */
         $accumObj = GeneralUtility::makeInstance(L10nAccumulatedInformation::class, $tree, $l10ncfg, $sysLang);
