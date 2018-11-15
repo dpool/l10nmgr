@@ -57,7 +57,7 @@ return array(
     'pages' => array(
       'exclude' => 1,
       'label' => $l10n . ':tx_l10nmgr_cfg.pages',
-      'displayCond' => 'FIELD:depth:<=:-2',
+      //'displayCond' => 'FIELD:depth:<=:-2',
       'config' => array(
         'type' => 'group',
         'internal_type' => 'db',
