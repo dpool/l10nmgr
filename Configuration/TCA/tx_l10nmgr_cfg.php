@@ -48,7 +48,7 @@ return array(
           array($l10n . ':tx_l10nmgr_cfg.depth.I.3', '3'),
           array($l10n . ':tx_l10nmgr_cfg.depth.I.4', '100'),
           array($l10n . ':tx_l10nmgr_cfg.depth.I.-1', '-1'),
-          array($l10n . ':tx_l10nmgr_cfg.depth.I.-2', '-2'),
+          //array($l10n . ':tx_l10nmgr_cfg.depth.I.-2', '-2')
         ),
         'size' => 1,
         'maxitems' => 1,
