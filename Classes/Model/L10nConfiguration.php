@@ -140,12 +140,16 @@ class L10nConfiguration
 
 
             foreach ($treeStartingRecords as $page) {
+                GeneralUtility::sysLog(sprintf('page uid: ' . $page['uid'], []), 'Dpool_Saml', GeneralUtility::SYSLOG_SEVERITY_WARNING);
+                GeneralUtility::sysLog(sprintf('depth: ' . $depth, []), 'Dpool_Saml', GeneralUtility::SYSLOG_SEVERITY_WARNING);
                 $HTML = $iconFactory->getIconForRecord('pages', $page, Icon::SIZE_SMALL)->render();
                 $tree->tree[] = array(
                     'row' => $page,
                     'HTML' => $HTML
                 );
-                $tree->getTree($page['uid'], $depth, '');
+                if ($depth > 0) {
+                    $tree->getTree($page['uid'], $depth, '');
+                }
             }
         }
 
